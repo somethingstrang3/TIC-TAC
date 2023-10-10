@@ -9,14 +9,22 @@ class TicTac(QMainWindow, Ui_MainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.ui.Button.clicked.connect(self.start)
+
         for i in range(9):
             self.ui.buttons[i].clicked.connect(self.process)
 
+        self.start()
+
+
+    def start(self):
         self.ui.switcher.button(0).setEnabled(True)
         self.ui.switcher.button(1).setEnabled(True)
         self.ui.switcher.button(1).setChecked(True)
-
-
+        for i in range(9):
+            self.ui.buttons[i].setEnabled(True)
+            self.ui.buttons[i].setText("")
+        self.ui.status_label.setText("Выберите символ и ходите")
 
     def process(self):
         self.sender().setText(self.ui.switcher.button(self.ui.switcher.checkedId()).text())
@@ -28,12 +36,14 @@ class TicTac(QMainWindow, Ui_MainWindow):
             self.ui.status_label.setText("Ход игрока X")
             self.ui.switcher.button(1).setChecked(True)
         else:
-            self.ui.status_label.setText("Ход игрока 0")
             self.ui.status_label.setText("Ход игрока O")
             self.ui.switcher.button(0).setChecked(True)
 
         winner = self.checkWinner()
 
+
+        if not self.checkDraw() and not winner:
+            self.ui.status_label.setText("Ничья")
 
 
     def checkWinner(self):
@@ -43,11 +53,21 @@ class TicTac(QMainWindow, Ui_MainWindow):
                 for i in range(9):
                     self.ui.buttons[i].setEnabled(False)
                     self.ui.status_label.setText("игрок O выиграл")
+                    return True
 
             if self.ui.buttons[pos[0]].text() == self.ui.buttons[pos[1]].text() == self.ui.buttons[pos[2]].text() == "X":
                 for i in range(9):
                     self.ui.buttons[i].setEnabled(False)
                     self.ui.status_label.setText("игрок X выиграл")
+                    return True
+        return False
+
+    def checkDraw(self):
+        for i in range(9):
+            if self.ui.buttons[i].isEnabled():
+                return True
+        return False
+
 
 
 
