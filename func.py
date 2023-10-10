@@ -18,6 +18,9 @@ class TicTac(QMainWindow, Ui_MainWindow):
 
 
 
+
+
+
     def process(self):
         self.sender().setText(self.ui.switcher.button(self.ui.switcher.checkedId()).text())
         self.sender().setEnabled(False)
@@ -28,11 +31,17 @@ class TicTac(QMainWindow, Ui_MainWindow):
             self.ui.status_label.setText("Ход игрока X")
             self.ui.switcher.button(1).setChecked(True)
         else:
-            self.ui.status_label.setText("Ход игрока 0")
             self.ui.status_label.setText("Ход игрока O")
             self.ui.switcher.button(0).setChecked(True)
 
         winner = self.checkWinner()
+
+
+        if not self.checkDraw() and not winner:
+            self.ui.status_label.setText("Ничья")
+
+
+
 
 
 
@@ -43,11 +52,21 @@ class TicTac(QMainWindow, Ui_MainWindow):
                 for i in range(9):
                     self.ui.buttons[i].setEnabled(False)
                     self.ui.status_label.setText("игрок O выиграл")
+                    return True
 
             if self.ui.buttons[pos[0]].text() == self.ui.buttons[pos[1]].text() == self.ui.buttons[pos[2]].text() == "X":
                 for i in range(9):
                     self.ui.buttons[i].setEnabled(False)
                     self.ui.status_label.setText("игрок X выиграл")
+                    return True
+        return False
+
+    def checkDraw(self):
+        for i in range(9):
+            if self.ui.buttons[i].isEnabled():
+                return True
+        return False
+
 
 
 
